@@ -1,0 +1,23 @@
+export default {
+    employees: [],
+    selectedEmployee : [],
+    members: {} || null,
+    token: sessionStorage.getItem('authtoken') || null,
+    otpstatus: '',
+    newPassword: '',
+    email: '',
+    memberShip: [],
+    memberMemberShip: {},
+    memberShipId: {},
+    books: { data: [], totalPages: 0 },
+    bookId: {},
+    searchBooks: { data: [], totalPages: 0} || null,
+    transactionList: { data: [], totalPages: 0},
+    audios: {},
+    tags:[],
+    tagId: { data: [], totalPages: 0 },
+    BookLoan: {data: [], totalPages: 0},
+    searchTagBooks: { data: [], totalPages: 0} || null,
+    showAuthModal: false,
+    
+}
