@@ -3,6 +3,7 @@ import store from '@/store';
 import { onMounted } from 'vue';
 import { computed } from 'vue';
 import { ref } from 'vue';
+import { VueAwesomePaginate } from 'vue-awesome-paginate';
 
 const nameBook = ref('')
 const author = ref('')
@@ -11,7 +12,9 @@ const yearPublication = ref('')
 const status = ref('')
 const language = ref('')
 const page = ref(0)
-const size = ref(10)
+const size = ref(6)
+const totalPage = ref(0)
+const currentPage = computed(() => page.value + 1)
 const BookLoans = computed(() => store.getters.getLoan)
 
 onMounted(async () => {
@@ -76,7 +79,8 @@ const searchBooks = async () => {
                 </div>
             </form>
             <div class="flex justify-end gap-4">
-                <button @click="searchBooks" class="bg-emerald-400  font-semibold p-2 rounded-lg mb-2">Tìm kiếm </button>
+                <button @click="searchBooks" class="bg-emerald-400  font-semibold p-2 rounded-lg mb-2">Tìm kiếm
+                </button>
                 <button class="bg-emerald-400  font-semibold p-2 rounded-lg mb-2">Quay lại </button>
             </div>
         </div>
@@ -104,7 +108,70 @@ const searchBooks = async () => {
                 </div>
             </div>
         </div>
+        <div class="flex m-5 justify-center">
+            <!-- <div class="flex">
+                  <button @click="prePage" :disabled="page === 0"
+                    class="flex items-center justify-center px-4 h-10  text-base font-medium text-gray-500 bg-white border border-gray-300 rounded-lg hover:bg-gray-100 hover:text-gray-700">
+                    <svg class="w-3.5 h-3.5 me-2 rtl:rotate-180" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
+                      fill="none" viewBox="0 0 14 10">
+                      <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M13 5H1m0 0 4 4M1 5l4-4" />
+                    </svg>
+                    Previous
+                  </button>
+                  <span class="mx-3 mt-1">{{ currentPage }} / {{ totalPage }}</span>
+                  <button @click="nextPage" :disabled="page >= totalPage - 1"
+                    class="flex items-center justify-center px-4 h-10 text-base font-medium text-gray-500 bg-white border border-gray-300 rounded-lg hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">
+                    Next
+                    <svg class="w-3.5 h-3.5 ms-2 rtl:rotate-180" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
+                      fill="none" viewBox="0 0 14 10">
+                      <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M1 5h12m0 0L9 1m4 4L9 9" />
+                    </svg>
+                  </button>
+                </div> -->
+            <VueAwesomePaginate :total-items="totalPage * size" :items-per-page="size" :max-pages-shown="5"
+                v-model="currentPage" />
+        </div>
     </div>
 </template>
 
-<style></style>
+<style>
+.pagination-container {
+    display: flex;
+
+    column-gap: 10px;
+}
+
+.paginate-buttons {
+    height: 40px;
+
+    width: 40px;
+
+    border-radius: 20px;
+
+    cursor: pointer;
+
+    background-color: rgb(242, 242, 242);
+
+    border: 1px solid rgb(217, 217, 217);
+
+    color: black;
+}
+
+.paginate-buttons:hover {
+    background-color: #d8d8d8;
+}
+
+.active-page {
+    background-color: #3498db;
+
+    border: 1px solid #3498db;
+
+    color: white;
+}
+
+.active-page:hover {
+    background-color: #2988c8;
+}
+</style>

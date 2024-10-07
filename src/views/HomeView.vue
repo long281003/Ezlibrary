@@ -6,13 +6,14 @@ import { onMounted } from 'vue';
 import { computed, ref } from 'vue';
 import SpinnerLoading from '@/componentsHTMl/SpinnerLoading.vue';
 import TagView from './TagView.vue';
+import { VueAwesomePaginate } from 'vue-awesome-paginate';
 
 const keyword = ref('')
 const books = ref([])
 const page = ref(0)
 const size = ref(20)
 const currentPage = computed(() => page.value + 1)
-const totalPage = ref(1)
+const totalPage = ref(0)
 const isLoading = ref(false)
 const token = sessionStorage.getItem('authtoken')
 
@@ -39,8 +40,7 @@ const searchBook = async () => {
   isLoading.value = true
   setTimeout(async () => {
     if (keyword.value) {
-      const res = await store.dispatch('searchBooks', { keyword: keyword.value, page: page.value, size: size.value })
-     console.log(res)
+     await store.dispatch('searchBooks', { keyword: keyword.value, page: page.value, size: size.value })
       books.value = store.getters.getSearchBook.data;
       totalPage.value = store.getters.getSearchBook.totalPages;
     } else {
@@ -50,9 +50,17 @@ const searchBook = async () => {
   }, 1000)
 }
 
+watch(currentPage, (newPage) => {
+  page.value = newPage - 1
+  fetchBooks();
+})
+
 const prePage = () => {
   if (page.value > 0) {
     page.value--
+    if (keyword.value) {
+      searchBook()
+    }
     fetchBooks()
   }
 }
@@ -60,9 +68,23 @@ const prePage = () => {
 const nextPage = () => {
   if (page.value < totalPage.value - 1) {
     page.value++
+    if (keyword.value) {
+      searchBook()
+    }
     fetchBooks()
   }
 }
+
+const handleClick = (targetPage) => {
+  if (targetPage < currentPage.value && targetPage >= 1) { // Going back
+    page.value = targetPage - 1;
+    prePage();
+  } else if (targetPage > currentPage.value && targetPage <= totalPage.value) { // Going forward
+    page.value = targetPage - 1;
+    nextPage();
+  }
+}
+
 </script>
 
 <template>
@@ -87,9 +109,9 @@ const nextPage = () => {
             <div>
               <Books v-if="!isLoading" :books="books" />
             </div>
-            <div v-show="totalPage > 1" v-if="books.length > 0">
+            <div v-if="books.length > 0">
               <div class="flex m-5 justify-end">
-                <div class="flex">
+                <!-- <div class="flex">
                   <button @click="prePage" :disabled="page === 0"
                     class="flex items-center justify-center px-4 h-10  text-base font-medium text-gray-500 bg-white border border-gray-300 rounded-lg hover:bg-gray-100 hover:text-gray-700">
                     <svg class="w-3.5 h-3.5 me-2 rtl:rotate-180" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
@@ -109,7 +131,9 @@ const nextPage = () => {
                         d="M1 5h12m0 0L9 1m4 4L9 9" />
                     </svg>
                   </button>
-                </div>
+                </div> -->
+                <VueAwesomePaginate :total-items="totalPage * size" :items-per-page="size" :max-pages-shown="3"
+                  v-model="currentPage" @click="handleClick" />
               </div>
             </div>
           </div>
@@ -120,5 +144,41 @@ const nextPage = () => {
 </template>
 
 <style>
+    .pagination-container {
+      display: flex;
   
+      column-gap: 10px;
+    }
+  
+    .paginate-buttons {
+      height: 40px;
+  
+      width: 40px;
+  
+      border-radius: 20px;
+  
+      cursor: pointer;
+  
+      background-color: rgb(242, 242, 242);
+  
+      border: 1px solid rgb(217, 217, 217);
+  
+      color: black;
+    }
+  
+    .paginate-buttons:hover {
+      background-color: #d8d8d8;
+    }
+  
+    .active-page {
+      background-color: #3498db;
+  
+      border: 1px solid #3498db;
+  
+      color: white;
+    }
+  
+    .active-page:hover {
+      background-color: #2988c8;
+    }
 </style>

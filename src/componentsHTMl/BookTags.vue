@@ -5,12 +5,13 @@ import { ref, computed, onMounted, watch } from 'vue';
 import { useRoute } from 'vue-router';
 import SpinnerLoading from '@/componentsHTMl/SpinnerLoading.vue';
 import TagView from '@/views/TagView.vue';
+import { VueAwesomePaginate } from 'vue-awesome-paginate';
 
 const books = ref([])
 const page = ref(0)
 const size = ref(20)
 const currentPage = computed(() => page.value + 1)
-const totalPage = ref(1)
+const totalPage = ref(0)
 const keyword = ref('')
 const router = useRoute()
 const id = router.params.id
@@ -75,11 +76,20 @@ const nextPage = () => {
         fetchBooktags(selectedTagId.value);
     }
 }
+const handleClick = (targetPage) => {
+    if (targetPage < currentPage.value && targetPage >= 1) { // Going back
+        page.value = targetPage - 1;
+        prePage();
+    } else if (targetPage > currentPage.value && targetPage <= totalPage.value) { // Going forward
+        page.value = targetPage - 1;
+        nextPage();
+    }
+}
 
 </script>
 
 <template>
-    <div>
+    <div class="mx-auto">
         <div class="flex justify-end pb-10">
             <input type="text" placeholder="Tìm kiếm" v-model="keyword" @keyup.prevent="searchBook"
                 class="w-1/2 border border-gray-400 text-gray-900 text-sm  rounded-full p-3" />
@@ -92,16 +102,16 @@ const nextPage = () => {
                 <div v-if="books.length === 0 && keyword" class="text-center font-bold">
                     Không tìm thấy sách
                 </div>
-                <div class="bg-white">
+                <div class="bg-white p-1">
                     <div class="text-center p-10" v-if="isLoading">
                         <SpinnerLoading />
                     </div>
                     <div>
                         <Books v-if="!isLoading" :books="books" />
                     </div>
-                    <div v-show="totalPage > 1" v-if="books.length > 0">
+                    <div v-if="books.length > 0">
                         <div class="flex m-5 justify-end">
-                            <div class="flex">
+                            <!-- <div class="flex">
                                 <button @click="prePage" :disabled="page === 0"
                                     class="flex items-center justify-center px-4 h-10  text-base font-medium text-gray-500 bg-white border border-gray-300 rounded-lg hover:bg-gray-100 hover:text-gray-700">
                                     <svg class="w-3.5 h-3.5 me-2 rtl:rotate-180" aria-hidden="true"
@@ -121,7 +131,14 @@ const nextPage = () => {
                                             stroke-width="2" d="M1 5h12m0 0L9 1m4 4L9 9" />
                                     </svg>
                                 </button>
-                            </div>
+                            </div> -->
+                            <VueAwesomePaginate 
+                            :total-items="totalPage * size" 
+                            :items-per-page="size" 
+                            :max-pages-shown="5" 
+                            v-model="currentPage"
+                            @click="handleClick"
+                            />
                         </div>
                     </div>
                 </div>
@@ -129,3 +146,43 @@ const nextPage = () => {
         </div>
     </div>
 </template>
+<style>
+        .pagination-container {
+            display: flex;
+    
+            column-gap: 10px;
+        }
+    
+        .paginate-buttons {
+            height: 40px;
+    
+            width: 40px;
+    
+            border-radius: 20px;
+    
+            cursor: pointer;
+    
+            background-color: rgb(242, 242, 242);
+    
+            border: 1px solid rgb(217, 217, 217);
+    
+            color: black;
+        }
+    
+        .paginate-buttons:hover {
+            background-color: #d8d8d8;
+        }
+    
+        .active-page {
+            background-color: #3498db;
+    
+            border: 1px solid #3498db;
+    
+            color: white;
+        }
+    
+        .active-page:hover {
+            background-color: #2988c8;
+        }
+
+</style>

@@ -10,7 +10,7 @@ export const apiMixin = {
                 return { Authorization: `Bearer ${token}`}
             }
         },
-         async getWithAuth(url) {
+        async getWithAuth(url) {
                 const headers = this.getHeader()
                 if(headers.Authorization){
                     try {
@@ -22,7 +22,7 @@ export const apiMixin = {
                     }
                 }
         },
-         async postWithAuth(url, data) {
+        async postWithAuth(url, data) {
             const headers = this.getHeader()
                 if(headers.Authorization) {
                     try {
@@ -34,7 +34,7 @@ export const apiMixin = {
                     }
                 }
         },
-         async putWithAuth(url, data) {
+        async putWithAuth(url, data) {
             const headers = this.getHeader()
                 if(headers.Authorization) {
                     try {
@@ -46,7 +46,7 @@ export const apiMixin = {
                     }
                 }
         },
-         async getWithoutAuth(url) {
+        async getWithoutAuth(url) {
             try {
                 const res = await axios.get(url)
                 return res.data
@@ -55,7 +55,7 @@ export const apiMixin = {
                 return error.response
             }
         },
-         async postWithoutAuth(url, data){
+        async postWithoutAuth(url, data){
             try {
                 const res = await axios.post(url, data)
                 return res.data

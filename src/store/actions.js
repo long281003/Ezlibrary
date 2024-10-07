@@ -238,25 +238,25 @@ export const editPassword = async ({commit}, {oldPassword, newPassword, confirmP
     // }
 }
 export const fetchMemberMemberShip = async ({commit}) => {
-    // try {
-    //     const token = sessionStorage.getItem('authtoken')
-    //     if(token){
-    //         const res = await axios.get('/member/getMembership', {
-    //             headers: {
-    //                 Authorization: `Bearer ${token}`
-    //             }
-    //         })
-    //         commit('setMemberMemberShip', res.data.data)
-    //         return res
-    //     }
-    // } catch (error) {
-    //     console.log(error)
-    // }
-    const data = await apiMixin.getWithAuth('/member/getMembership')
-    if(data){
-        commit('setMemberMemberShip', data.data)
-            return data.data
+    try {
+        const token = sessionStorage.getItem('authtoken')
+        if(token){
+            const res = await axios.get('/member/getMembership', {
+                headers: {
+                    Authorization: `Bearer ${token}`
+                }
+            })
+            commit('setMemberMemberShip', res.data.data)
+            return res
+        }
+    } catch (error) {
+        console.log(error)
     }
+    // const data = await apiMixin.getWithAuth('/member/getMembership')
+    // if(data){
+    //     commit('setMemberMemberShip', data.data)
+    //         return data.data
+    // }
 }
 export const fetchTransaction = async ({commit}, {page, size}) => {
     try {
@@ -266,7 +266,7 @@ export const fetchTransaction = async ({commit}, {page, size}) => {
                 headers: {
                     Authorization: `Bearer ${token}`
                 }
-             })
+            })
         commit('setTransaction',res.data.data)
         return res.data.data
         }

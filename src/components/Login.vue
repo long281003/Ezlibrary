@@ -34,30 +34,30 @@ const closeModal = () => {
 }
 
 const handleLogin = async () => {
-    if (!email.value.trim() || !password.value.trim() ) {
+        if (!email.value.trim() || !password.value.trim() ) {
         toast.error('Vui lòng nhập thông tin')
-    }
+        }
     try {
         const body = {
             email: email.value,
             password: password.value
         }
-        const result = await store.dispatch('loginMember', body)
-        if (result && result.data.responseCode === 0) {
-            router.go(0)
-            router.push('/')
-            closeModal()
-            toast.success("Đăng nhập thành công")
-            router.push('/home');
-        } else {
-            emailError.value = true
-            passwordError.value = true
-            toast.error(result.data.data)
+            const result = await store.dispatch('loginMember', body)
+            if (result && result.data.responseCode === 0) {
+                router.go(0)
+                router.push('/')
+                closeModal()
+                toast.success("Đăng nhập thành công")
+                router.push('/home');
+            } else {
+                emailError.value = true
+                passwordError.value = true
+                toast.error(result.data.data)
+            }
+        } catch (error) {
+            console.log(error)
+            
         }
-    } catch (error) {
-        console.log(error)
-        
-    }
 }
 
 const toggleShowPassword = () => {

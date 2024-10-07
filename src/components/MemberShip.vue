@@ -3,10 +3,12 @@ import store from '@/store';
 import { ref, onMounted, watch } from 'vue';
 import { computed } from 'vue';
 import SpinnerLoading from '@/componentsHTMl/SpinnerLoading.vue';
+import { VueAwesomePaginate } from 'vue-awesome-paginate';
 
 const memberShips = computed(() => store.getters.getMemberShip)
 const memberMemberShip = computed(() => store.state.memberMemberShip)
 
+const transactions = ref([])
 const page = ref(0)
 const size = ref(5)        
 const totalPage = ref(1)
@@ -21,15 +23,15 @@ onMounted( async () => {
         isLoading.value = false
     }, 1000)
     
-    fetchTransaction()
+   await fetchTransaction()
 })
 
 const fetchTransaction = async () => {
     await store.dispatch('fetchTransaction', { page: page.value, size: size.value })
 }
 
-const transactions = computed(() => store.getters.getTransaction)
-watch(transactions, (newTransaction) => {
+const alltransactions = computed(() => store.getters.getTransaction)
+watch(alltransactions, (newTransaction) => {
     transactions.value = newTransaction.data
     totalPage.value = newTransaction.totalPages
 })
@@ -49,6 +51,15 @@ const nextPage = async () => {
     if (page.value < totalPage.value - 1 ) {
         page.value++;
          fetchTransaction()
+    }
+}
+const handleClick = (targetPage) => {
+    if (targetPage < currentPage.value && targetPage >= 1) { // Going back
+        page.value = targetPage - 1;
+        prePage();
+    } else if (targetPage > currentPage.value && targetPage <= totalPage.value) { // Going forward
+        page.value = targetPage - 1;
+        nextPage();
     }
 }
 </script>
@@ -94,7 +105,7 @@ const nextPage = async () => {
                         </tr>
                     </thead>
                     <tbody>
-                        <tr v-for="(transaction, index) of transactions" :key="transaction.id">
+                        <tr v-for="(transaction, index) of alltransactions" :key="transaction.id">
                             <td class="border border-slate-300 text-center">{{ index + 1 }}</td>
                             <td class="border border-slate-300 text-center">{{ transaction.transactionCode }}</td>
                             <td class="border border-slate-300 text-center">{{ new Date(transaction.date).toLocaleDateString('vi-VN') }}</td>
@@ -105,8 +116,10 @@ const nextPage = async () => {
                         </tr>
                     </tbody>
                 </table>
-                <div v-if="totalPage > 1" class="flex mt-10 justify-center">
-                    <div class="flex">
+                <div class="flex mt-10 justify-center">
+                    <VueAwesomePaginate :total-items="totalPage * size" :items-per-page="size" :max-pages-shown="3"
+                        v-model="currentPage" @click="handleClick" />
+                    <!-- <div class="flex">
                         <button @click="prePage" :disabled="page === 0"
                             class="flex items-center justify-center px-4 h-10  text-base font-medium text-gray-500 bg-white border border-gray-300 rounded-lg hover:bg-gray-100 hover:text-gray-700">
                             <svg class="w-3.5 h-3.5 me-2 rtl:rotate-180" aria-hidden="true"
@@ -126,7 +139,7 @@ const nextPage = async () => {
                                     stroke-width="2" d="M1 5h12m0 0L9 1m4 4L9 9" />
                             </svg>
                         </button>
-                    </div>
+                    </div> -->
                 </div>
             </div>
         </div>

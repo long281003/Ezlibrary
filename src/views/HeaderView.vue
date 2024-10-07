@@ -7,9 +7,9 @@ const books = ref([]);
 const page = ref(0)
 const size = ref(20)
 
-const currentIndex = ref(1); // Start with the second book
+const currentIndex = ref(1); 
 const allBooks = computed(() => store.getters.getBook)
-// Function to go to the next book
+
 watch(allBooks, (newBooks) => {
   books.value = newBooks.data
 })
@@ -38,6 +38,7 @@ const prevBook = () => {
     currentIndex.value = (currentIndex.value - 1 + books.value.length) % books.value.length;
   }
 };
+
 const getBookStyle = (index) => {
   const offset = index - currentIndex.value;
   const absOffset = Math.abs(offset);
