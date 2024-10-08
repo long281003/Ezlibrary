@@ -57,23 +57,27 @@ const editAccount = async () => {
     }
 }
 
-
 const handleInactive = async () => {
-    const res = await apiMixin.putWithAuth('/member/inactive')
-    if (res) {
-        sessionStorage.removeItem('authtoken')
-        toast.success('Tài khoản đã bị vô hiệu hóa')
-        router.go(0);
-   }
+    const useConfirm = confirm("Bạn có muốn vô hiệu hóa tài khoản")
+    if (useConfirm) {
+        const res = await apiMixin.putWithAuth('/member/inactive')
+        if (res) {
+            sessionStorage.removeItem('authtoken')
+            toast.success('Tài khoản đã bị vô hiệu hóa')
+            router.go(0);
+        }
+    } else {
+        toast.info("Tài khoản không bị vô hiệu hóa")
+    }
 }
 
 const handleChangePassword = () => {
     showPassword.value = true
 }
 
-// const openEmailModal = () => {
-//     showEmailModal.value = true
-// }
+const openEmailModal = () => {
+    showEmailModal.value = true
+}
 
 const handleRouter = () => {
     router.push('/memberShip')
@@ -169,11 +173,11 @@ const handleRouter = () => {
                                                 <span>{{ email }}</span>
                                             </div>
                                         </div>
-                                        <!-- <div>
+                                        <div>
                                             <button @click="openEmailModal"
                                                 class="border border-blue-400 cursor-pointer rounded-md p-2 mt-2 text-blue-400">Cập
                                                 nhập</button>
-                                        </div> -->
+                                        </div>
                                     </div>
                                 </div>
                             </div>

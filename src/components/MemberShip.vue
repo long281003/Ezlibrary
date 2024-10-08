@@ -54,10 +54,10 @@ const nextPage = async () => {
     }
 }
 const handleClick = (targetPage) => {
-    if (targetPage < currentPage.value && targetPage >= 1) { // Going back
+    if (targetPage < currentPage.value && targetPage >= 1) { 
         page.value = targetPage - 1;
         prePage();
-    } else if (targetPage > currentPage.value && targetPage <= totalPage.value) { // Going forward
+    } else if (targetPage > currentPage.value && targetPage <= totalPage.value) { 
         page.value = targetPage - 1;
         nextPage();
     }

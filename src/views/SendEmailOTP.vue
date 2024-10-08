@@ -1,4 +1,6 @@
 <script setup>
+import VerifyEditEmail from '@/components/Util/VerifyEditEmail.vue';
+import apiMixin from '@/Mixins/MixinAPI';
 import store from '@/store';
 import { ref } from 'vue';
 import { computed } from 'vue';
@@ -40,10 +42,10 @@ const handlerSendOTP = async () => {
             //         closeModal()
             //     } 
             // }
-            const res = await store.dispatch('sendMailOTP', email.value)
-            if (res && res.data.responseCode === 0) {
+            const res = await apiMixin.postWithAuth(`/otp/email/sendOTPEditEmail?email=${email.value}`)
+            if (res && res.responseCode === 0) {
                 closeModal()
-                toast.success(res.data.data)
+                toast.success('Gửi otp thành công')
                 showModalVerify.value = true
             }
         } catch (error) {
@@ -85,6 +87,7 @@ const handlerSendOTP = async () => {
             </div>
         </div>
     </div>
+    <VerifyEditEmail :show="showModalVerify" :email="email" @update:show="showModalVerify = $event"/>
 </template>
 
 <style>

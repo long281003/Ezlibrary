@@ -1,6 +1,7 @@
 <script setup>
 import apiMixin from '@/Mixins/MixinAPI';
-import { ref } from 'vue';
+import store from '@/store';
+import { ref, onMounted } from 'vue';
 import { toast } from "vue3-toastify";
 
 const otp = ref('')
@@ -14,22 +15,24 @@ const closeModal = () => {
 const handlerSendOTP = async (event) => {
     event.preventDefault()
     try {
-        const result = await apiMixin.postWithoutAuth(`/otp/email/verifyOTP?email=${props.email}&otp=${otp.value}`)
-        if (result && result.responseCode === 0) {
-             closeModal()
-            toast.success(result.data)
+        const res = await apiMixin.putWithAuth('/member/editEmail', { email: props.email, otp: otp.value })
+        if (res.data && res.data.responseCode === 0) {
+            closeModal()
+            toast.success('Đổi email thành công')
         }
     } catch (error) {
         console.log(error)
     }
 }
 
+onMounted(async () => {
+    await store.dispatch('fetchInfoMember')
+})
 </script>
 
 <template>
     <div class="flex justify-center items-center">
-        <div v-show="props.show"
-            class="fixed z-50 inset-0 flex items-center justify-center bg-gray-700 bg-opacity-50">
+        <div v-show="props.show" class="fixed z-50 inset-0 flex items-center justify-center bg-gray-700 bg-opacity-50">
             <div class="relative max-w-2xl bg-white rounded-md shadow-xl ">
                 <div class="w-[450px]">
                     <button @click="closeModal"
@@ -50,7 +53,8 @@ const handlerSendOTP = async (event) => {
                         </div>
                         <div class="flex justify-center gap-4">
                             <div>
-                                <button class="bg-emerald-400 w-full font-semibold p-2 rounded-full mb-6">Xác nhận</button>
+                                <button class="bg-emerald-400 w-full font-semibold p-2 rounded-full mb-6">Xác
+                                    nhận</button>
                             </div>
                         </div>
                         <hr />

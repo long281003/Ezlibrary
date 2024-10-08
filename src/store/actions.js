@@ -75,7 +75,6 @@ export const loginMember = async ({commit}, member) => {
         return error.response
     }
     // const data = await apiMixin.postWithoutAuth('/auth/member/login', member)
-    // console.log(data)
     // if(data.responseCode === 0){
     //     const token = data.data.accessToken
     //     commit('setToken', token) 
@@ -123,7 +122,6 @@ export const editInfo = async ({dispatch}, member) => {
 
     // }
     const data = await apiMixin.putWithAuth('/member/editInfo', member)
-    console.log(data)
     if(data){
         await  dispatch('fetchInfoMember')
           return data.data
@@ -231,7 +229,6 @@ export const editPassword = async ({commit}, {oldPassword, newPassword, confirmP
         return error.response
     }
     // const data = await apiMixin.putWithAuth(`/member/editPassword`, {oldPassword, newPassword, confirmPassword})
-    // console.log(data)
     // if(data){
     //     commit('updateMember', data)
     //     return data
@@ -283,7 +280,6 @@ export const fetchBookLoan  = async ({commit}, {page, size}) => {
     //                 Authorization: `Bearer ${token}`
     //             }
     //         })
-    //         console.log(res.data.data)
     //         commit('setBookLoan', res.data.data)
     //         return res.data
     //     }
@@ -480,4 +476,3 @@ export const closeAuthModal = async ({commit}) => {
     commit('SET_AUTH_MODAL', false);
 }
 // Admin
-

@@ -26,7 +26,6 @@ const fetchBooks = async () => {
 }
 
 const allBooks = computed(() => store.getters.getBook)
-
 watch(allBooks, (newBooks) => {
   books.value = newBooks.data
   totalPage.value = newBooks.totalPages
@@ -55,31 +54,31 @@ watch(currentPage, (newPage) => {
   fetchBooks();
 })
 
-const prePage = () => {
+const prePage = async () => {
   if (page.value > 0) {
     page.value--
     if (keyword.value) {
-      searchBook()
+     await searchBook()
     }
-    fetchBooks()
+   await fetchBooks()
   }
 }
 
-const nextPage = () => {
+const nextPage = async () => {
   if (page.value < totalPage.value - 1) {
     page.value++
     if (keyword.value) {
-      searchBook()
+     await searchBook()
     }
-    fetchBooks()
+   await fetchBooks()
   }
 }
 
 const handleClick = (targetPage) => {
-  if (targetPage < currentPage.value && targetPage >= 1) { // Going back
+  if (targetPage < currentPage.value && targetPage >= 1) { 
     page.value = targetPage - 1;
     prePage();
-  } else if (targetPage > currentPage.value && targetPage <= totalPage.value) { // Going forward
+  } else if (targetPage > currentPage.value && targetPage <= totalPage.value) { 
     page.value = targetPage - 1;
     nextPage();
   }

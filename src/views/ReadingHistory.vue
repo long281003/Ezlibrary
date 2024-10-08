@@ -12,7 +12,7 @@ const yearPublication = ref('')
 const status = ref('')
 const language = ref('')
 const page = ref(0)
-const size = ref(6)
+const size = ref(10)
 const totalPage = ref(0)
 const currentPage = computed(() => page.value + 1)
 const BookLoans = computed(() => store.getters.getLoan)
@@ -32,8 +32,10 @@ const searchBooks = async () => {
         page: page.value,
         size: size.value,
     };
-
-    await store.dispatch('fetchBookLoan', searchParams);
+    const res = await store.dispatch('fetchBookLoan', searchParams);
+    if (res && res.totalPages) {
+        totalPage.value = res.totalPages
+   }
 };
 
 </script>
@@ -79,9 +81,8 @@ const searchBooks = async () => {
                 </div>
             </form>
             <div class="flex justify-end gap-4">
-                <button @click="searchBooks" class="bg-emerald-400  font-semibold p-2 rounded-lg mb-2">Tìm kiếm
+                <button @click="searchBooks" class="bg-emerald-400 w-40  font-semibold p-2 rounded-lg mb-2">Tìm kiếm
                 </button>
-                <button class="bg-emerald-400  font-semibold p-2 rounded-lg mb-2">Quay lại </button>
             </div>
         </div>
         <h1 class="text-4xl text-center mb-4">Lịch sử đọc</h1>
@@ -108,7 +109,7 @@ const searchBooks = async () => {
                 </div>
             </div>
         </div>
-        <div class="flex m-5 justify-center">
+        <div v-if="totalPage > 1" class="flex m-5 justify-center">
             <!-- <div class="flex">
                   <button @click="prePage" :disabled="page === 0"
                     class="flex items-center justify-center px-4 h-10  text-base font-medium text-gray-500 bg-white border border-gray-300 rounded-lg hover:bg-gray-100 hover:text-gray-700">

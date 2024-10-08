@@ -117,7 +117,7 @@ const toggleShowPassword = () => {
                         <span class="mr-3">Bạn có điều khoản?</span>
                         <button @click="openModalRegister">
                             <span class="text-emerald-400">Đăng nhập ngay</span>
-                        </button>
+                        </button>           
                     </div>
                 </div>
             </div>
